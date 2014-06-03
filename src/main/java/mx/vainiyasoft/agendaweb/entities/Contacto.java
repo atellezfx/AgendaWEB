@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Contacto.findAll", query = "SELECT c FROM Contacto c"),
-    @NamedQuery(name = "Contacto.findById", query = "SELECT c FROM Contacto c WHERE c.id = :id"),
+    @NamedQuery(name = "Contacto.findById", query = "SELECT c FROM Contacto c WHERE c.serverId = :id"),
     @NamedQuery(name = "Contacto.findByAndroidId", query = "SELECT c FROM Contacto c WHERE c.androidId = :androidId"),
     @NamedQuery(name = "Contacto.findByNombre", query = "SELECT c FROM Contacto c WHERE c.nombre = :nombre"),
     @NamedQuery(name = "Contacto.findByEmail", query = "SELECT c FROM Contacto c WHERE c.email = :email"),
@@ -35,7 +35,7 @@ public class Contacto implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    private Integer serverId;
     @Basic(optional = false)
     @NotNull
     @Column(name = "androidId", nullable = false)
@@ -72,12 +72,12 @@ public class Contacto implements Serializable {
     public Contacto() {
     }
 
-    public Contacto(Integer id) {
-        this.id = id;
+    public Contacto(Integer serverId) {
+        this.serverId = serverId;
     }
 
-    public Contacto(Integer id, int androidId, String nombre, String propietario, String md5) {
-        this.id = id;
+    public Contacto(Integer serverId, int androidId, String nombre, String propietario, String md5) {
+        this.serverId = serverId;
         this.androidId = androidId;
         this.nombre = nombre;
         this.propietario = propietario;
@@ -85,8 +85,8 @@ public class Contacto implements Serializable {
     }
 
     //<editor-fold defaultstate="collapsed" desc="GETTER METHODS">
-    public Integer getId() {
-        return id;
+    public Integer getServerId() {
+        return serverId;
     }
     
     public int getAndroidId() {
@@ -124,8 +124,8 @@ public class Contacto implements Serializable {
 //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="SETTER METHODS">
-    public void setId(Integer id) {
-        this.id = id;
+    public void setServerId(Integer serverId) {
+        this.serverId = serverId;
     }
     
     public void setAndroidId(int androidId) {
@@ -166,7 +166,7 @@ public class Contacto implements Serializable {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 67 * hash + Objects.hashCode(this.id);
+        hash = 67 * hash + Objects.hashCode(this.serverId);
         hash = 67 * hash + this.androidId;
         hash = 67 * hash + Objects.hashCode(this.nombre);
         hash = 67 * hash + Objects.hashCode(this.propietario);
@@ -183,7 +183,7 @@ public class Contacto implements Serializable {
             return false;
         }
         final Contacto other = (Contacto) obj;
-        if (!Objects.equals(this.id, other.id)) {
+        if (!Objects.equals(this.serverId, other.serverId)) {
             return false;
         }
         if (this.androidId != other.androidId) {

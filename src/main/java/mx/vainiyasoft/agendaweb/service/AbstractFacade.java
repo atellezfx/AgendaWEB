@@ -24,16 +24,41 @@ public abstract class AbstractFacade<T> {
 
     protected abstract EntityManager getEntityManager();
 
-    public void create(T entity) {
-        getEntityManager().persist(entity);
+    public String create(T entity) {
+        try {
+            EntityManager em = getEntityManager();
+            em.getTransaction().begin();
+            em.persist(entity);
+            em.getTransaction().commit();
+            em.refresh(entity);
+            return "ok";
+        } catch (Exception e) {
+            return e.getLocalizedMessage();
+        }
     }
 
-    public void edit(T entity) {
-        getEntityManager().merge(entity);
+    public String edit(T entity) {
+        try {
+            EntityManager em = getEntityManager();
+            em.getTransaction().begin();
+            em.merge(entity);
+            em.getTransaction().commit();
+            return "ok";
+        } catch (Exception e) {
+            return e.getLocalizedMessage();
+        }
     }
 
-    public void remove(T entity) {
-        getEntityManager().remove(getEntityManager().merge(entity));
+    public String remove(T entity) {
+        try {
+            EntityManager em = getEntityManager();
+            em.getTransaction().begin();
+            em.remove(em.merge(entity));
+            em.getTransaction().commit();
+            return "ok";
+        } catch (Exception e) {
+            return e.getLocalizedMessage();
+        }
     }
 
     public T find(Object id) {

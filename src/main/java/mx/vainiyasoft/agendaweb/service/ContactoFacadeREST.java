@@ -11,7 +11,6 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
-import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -20,6 +19,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import mx.vainiyasoft.agendaweb.entities.Contacto;
 
 /**
@@ -33,6 +33,7 @@ public class ContactoFacadeREST extends AbstractFacade<Contacto> {
     // Tomcat ignora esta inyección de recursos
     // @PersistenceContext(unitName = "mx.vainiyasoft_agendaweb_war_1.0PU")
     private EntityManager em;
+    private final String JSON_RESPONSE = "{\"serverId\":%d, \"androidId\":%d, \"md5\":\"%s\", \"operacion\":\"%s\", \"resultado\":\"%s\"}";
 
     public ContactoFacadeREST() {
         super(Contacto.class);
@@ -40,22 +41,31 @@ public class ContactoFacadeREST extends AbstractFacade<Contacto> {
 
     @POST
     @Override
-    @Consumes({"application/json"})
-    public void create(Contacto entity) {
-        super.create(entity);
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String create(Contacto entity) {
+        String resultado = super.create(entity);
+        return String.format(JSON_RESPONSE, entity.getServerId(), entity.getAndroidId(),
+                entity.getMd5(), "insert", resultado);
     }
 
     @PUT
     @Path("{id}")
-    @Consumes({"application/json"})
-    public void edit(@PathParam("id") Integer id, Contacto entity) {
-        super.edit(entity);
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public String edit(@PathParam("id") Integer id, Contacto entity) {
+        String resultado = super.edit(entity);
+        return String.format(JSON_RESPONSE, entity.getServerId(), entity.getAndroidId(),
+                entity.getMd5(), "update", resultado);
     }
 
     @DELETE
     @Path("{id}")
-    public void remove(@PathParam("id") Integer id) {
-        super.remove(super.find(id));
+    @Produces(MediaType.APPLICATION_JSON)
+    public String remove(@PathParam("id") Integer id) {
+        String resultado = super.remove(super.find(id));
+        String mensaje = "{\"serverId\":%d, \"operacion\":\"%s\", \"resultado\":\"%s\"}";
+        return String.format(mensaje, id, "delete", resultado);
     }
 
     @GET
